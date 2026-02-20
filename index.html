@@ -14,7 +14,6 @@
             min-height: 100vh;
         }
 
-        /* Card Styles with Accent Borders */
         .card-pro {
             background: #ffffff;
             border-radius: 1.25rem;
@@ -33,14 +32,14 @@
             position: absolute; top: 0; left: 0; right: 0; height: 4px;
         }
 
-        /* Colors as per your request */
         .bg-today { background: linear-gradient(90deg, #3b82f6, #2563eb); }
         .bg-yesterday { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+        .bg-db-yesterday { background: linear-gradient(90deg, #64748b, #334155); }
         .bg-week { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .bg-month { background: linear-gradient(90deg, #ec4899, #be185d); }
         .bg-net { background: linear-gradient(90deg, #f59e0b, #d97706); }
         .bg-avg { background: linear-gradient(90deg, #10b981, #059669); }
 
-        /* Notification Popup */
         #leadPopup {
             position: fixed; bottom: 30px; right: 30px;
             transform: translateX(150%);
@@ -67,7 +66,7 @@
 
     <div id="overlay">
         <div class="text-center">
-            <h1 class="text-4xl font-bold text-white mb-8 tracking-tight">CPA <span class="text-blue-500">NEXUS</span></h1>
+            <h1 class="text-4xl font-bold text-white mb-8 tracking-tight">CPA <span class="text-blue-500">GRIP</span></h1>
             <button onclick="initializeSystem()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-xl font-bold transition-all">SIGN IN</button>
         </div>
     </div>
@@ -87,7 +86,7 @@
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black">N</div>
                 <div>
-                    <h1 class="text-xl font-bold text-slate-800">Nexus Executive Dashboard</h1>
+                    <h1 class="text-xl font-bold text-slate-800">CPAGRIP Postback Dashboard</h1>
                     <p class="text-xs text-slate-400 font-medium tracking-wide">Command Interface v2.0</p>
                 </div>
             </div>
@@ -117,16 +116,26 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
             <div class="card-pro p-6">
                 <div class="accent-bar bg-yesterday"></div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Yesterday</p>
                 <p id="yesterdayRev" class="text-3xl font-bold text-slate-800">$0.00</p>
             </div>
             <div class="card-pro p-6">
+                <div class="accent-bar bg-db-yesterday"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Before Yesterday</p>
+                <p id="dbYesterdayRev" class="text-3xl font-bold text-slate-800">$0.00</p>
+            </div>
+            <div class="card-pro p-6">
                 <div class="accent-bar bg-week"></div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Last 7 Days</p>
                 <p id="weekRev" class="text-3xl font-bold text-slate-800">$0.00</p>
+            </div>
+            <div class="card-pro p-6">
+                <div class="accent-bar bg-month"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">This Month</p>
+                <p id="monthRev" class="text-3xl font-bold text-slate-800">$0.00</p>
             </div>
             <div class="card-pro p-6">
                 <div class="accent-bar bg-net"></div>
@@ -163,6 +172,11 @@
     </div>
 
     <script>
+        // --- LOCAL SOUND CONFIG ---
+        // GitHub එකට upload කරපු sound file එකේ නම මෙතනට දාන්න (e.g., 'alert.mp3')
+        const customSoundUrl = 'sound.mp3'; 
+        const notificationSound = new Audio(customSoundUrl);
+
         const appUrl = 'https://script.google.com/macros/s/AKfycbzkiT8xK9umDamSUgi0mjMMHMj21FXRQVS80uousnrK93ioAxOKWvxR44ClUqHT7kAvXw/exec';
         const dailyGoal = 100;
         let lastLeadCount = 0;
@@ -172,6 +186,13 @@
             document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => document.getElementById('overlay').style.display = 'none', 500);
             isInitialized = true;
+            
+            // Browser එකෙන් sound block කරන එක නැති කරන්න පොඩි trick එකක්
+            notificationSound.play().then(() => {
+                notificationSound.pause();
+                notificationSound.currentTime = 0;
+            }).catch(e => console.log("Audio waiting for interaction"));
+            
             refreshData();
         }
 
@@ -184,7 +205,11 @@
             const popup = document.getElementById('leadPopup');
             document.getElementById('popupAmount').innerText = `+$${amount.toFixed(2)} Added`;
             popup.classList.add('show');
-            new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3').play();
+            
+            // Sound play කිරීම
+            notificationSound.currentTime = 0;
+            notificationSound.play().catch(e => console.error("Sound play error:", e));
+            
             setTimeout(() => popup.classList.remove('show'), 3000);
         }
 
@@ -206,21 +231,29 @@
                     showNotification(parseFloat(sorted[0].Payout) || 0);
                 }
 
-                let total = 0, daily = 0, yesterday = 0, week = 0;
+                let total = 0, daily = 0, yesterday = 0, dbYesterday = 0, week = 0, month = 0;
                 let countries = {}, tableHtml = '';
-                const nexusToday = getNexusDate(new Date());
-                const yesterdayObj = new Date(); yesterdayObj.setDate(yesterdayObj.getDate() - 1);
-                const nexusYesterday = getNexusDate(yesterdayObj);
+
+                const now = new Date();
+                const nexusToday = getNexusDate(now);
+                const yestObj = new Date(); yestObj.setDate(yestObj.getDate() - 1);
+                const nexusYesterday = getNexusDate(yestObj);
+                const dbYestObj = new Date(); dbYestObj.setDate(dbYestObj.getDate() - 2);
+                const nexusDbYesterday = getNexusDate(dbYestObj);
                 const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
                 sorted.forEach((row) => {
                     const pay = parseFloat(row.Payout) || 0;
                     const lDate = new Date(row.Date);
                     const lNexusDate = getNexusDate(lDate);
+                    
                     total += pay;
                     if(lNexusDate === nexusToday) daily += pay;
                     if(lNexusDate === nexusYesterday) yesterday += pay;
+                    if(lNexusDate === nexusDbYesterday) dbYesterday += pay;
                     if(lDate >= sevenDaysAgo) week += pay;
+                    if(lDate.getMonth() === now.getMonth() && lDate.getFullYear() === now.getFullYear()) month += pay;
+                    
                     if(row.Country) countries[row.Country] = (countries[row.Country] || 0) + 1;
 
                     tableHtml += `<tr class="hover:bg-slate-50 transition-all">
@@ -233,7 +266,9 @@
 
                 document.getElementById('dailyRev').innerText = '$' + daily.toFixed(2);
                 document.getElementById('yesterdayRev').innerText = '$' + yesterday.toFixed(2);
+                document.getElementById('dbYesterdayRev').innerText = '$' + dbYesterday.toFixed(2);
                 document.getElementById('weekRev').innerText = '$' + week.toFixed(2);
+                document.getElementById('monthRev').innerText = '$' + month.toFixed(2);
                 document.getElementById('totalNet').innerText = '$' + total.toFixed(2);
                 document.getElementById('avgPay').innerText = '$' + (sorted.length > 0 ? total/sorted.length : 0).toFixed(2);
                 document.getElementById('leadsTable').innerHTML = tableHtml;
