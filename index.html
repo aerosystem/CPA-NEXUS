@@ -3,135 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPA NEXUS | COMMAND CENTER</title>
+    <title>CPA Nexus | Executive Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --neon-cyan: #00f2ff; --neon-purple: #7000ff; --dark-bg: #020617; }
-        body { background: var(--dark-bg); color: white; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
-        .title-font { font-family: 'Orbitron', sans-serif; }
-        
-        /* Premium Glass Effect */
-        .glass { 
-            background: rgba(15, 23, 42, 0.6); 
-            backdrop-filter: blur(15px); 
-            border: 1px solid rgba(0, 242, 255, 0.15); 
+        body { 
+            background-color: #f1f5f9; 
+            color: #334155; 
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
         }
 
-        /* Welcome Overlay */
+        /* Card Styles with Accent Borders */
+        .card-pro {
+            background: #ffffff;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .card-pro:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .accent-bar {
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        }
+
+        /* Colors as per your request */
+        .bg-today { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .bg-yesterday { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+        .bg-week { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+        .bg-net { background: linear-gradient(90deg, #f59e0b, #d97706); }
+        .bg-avg { background: linear-gradient(90deg, #10b981, #059669); }
+
+        /* Notification Popup */
+        #leadPopup {
+            position: fixed; bottom: 30px; right: 30px;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2000;
+        }
+        #leadPopup.show { transform: translateX(0); }
+
+        .progress-bar {
+            background: #e2e8f0; height: 8px; border-radius: 10px; overflow: hidden;
+        }
+        .progress-fill {
+            background: #3b82f6; height: 100%; transition: width 1s ease-in-out;
+        }
+
         #overlay {
-            position: fixed; inset: 0; background: rgba(2, 6, 23, 0.98);
-            z-index: 1000; display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(20px); transition: opacity 0.8s ease;
+            position: fixed; inset: 0; background: #0f172a;
+            z-index: 3000; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
         }
-        
-        .btn-init {
-            padding: 20px 40px; border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan); font-family: 'Orbitron', sans-serif;
-            font-weight: bold; letter-spacing: 5px; cursor: pointer;
-            transition: all 0.3s; box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-        }
-        .btn-init:hover { background: var(--neon-cyan); color: black; box-shadow: 0 0 50px var(--neon-cyan); }
-
-        /* Goal Bar Flow Animation */
-        .bar-container { background: rgba(0,0,0,0.5); border-radius: 50px; border: 1px solid rgba(0, 242, 255, 0.3); }
-        .bar-fill { 
-            background: linear-gradient(90deg, #00f2ff, #7000ff, #00f2ff); 
-            background-size: 200% 100%;
-            animation: flow 2s linear infinite;
-            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
-        }
-        @keyframes flow { 0% { background-position: 200% 0; } 100% { background-position: 0 0; } }
-
-        @keyframes lead-bounce {
-            0%, 100% { transform: scale(1); background: transparent; }
-            50% { transform: scale(1.02); background: rgba(0, 242, 255, 0.1); }
-        }
-        .new-lead-row { animation: lead-bounce 1.5s ease-in-out; border-left: 4px solid var(--neon-cyan); }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 10px; }
     </style>
 </head>
-<body class="p-4 lg:p-10 min-h-screen flex flex-col">
+<body class="p-6 md:p-10">
 
     <div id="overlay">
         <div class="text-center">
-            <h1 class="title-font text-5xl mb-4 italic font-black text-white">CPA <span class="text-cyan-400">NEXUS</span></h1>
-            <h2 class="title-font text-sm mb-10 tracking-[0.8em] text-cyan-700">COMMAND INTERFACE</h2>
-            <button onclick="initializeSystem()" class="btn-init uppercase">Initialize System</button>
-            <p class="mt-8 text-gray-700 text-[10px] tracking-[0.5em] uppercase">Security Protocol Active</p>
+            <h1 class="text-4xl font-bold text-white mb-8 tracking-tight">CPA <span class="text-blue-500">NEXUS</span></h1>
+            <button onclick="initializeSystem()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-xl font-bold transition-all">SIGN IN</button>
         </div>
     </div>
 
-    <div class="max-w-7xl mx-auto w-full flex-1 flex flex-col">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-white/5 pb-8">
-            <div class="text-center md:text-left">
-                <h1 class="text-4xl font-black title-font italic text-white leading-none">CPA <span class="text-cyan-400">NEXUS</span></h1>
-                <p id="system-status" class="text-cyan-800 font-bold tracking-[0.5em] text-[10px] mt-2 uppercase italic">Offline</p>
+    <div id="leadPopup" class="bg-white border-l-4 border-green-500 shadow-2xl rounded-xl p-5 flex items-center gap-4 min-w-[300px]">
+        <div class="bg-green-100 p-2 rounded-lg text-green-600">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        </div>
+        <div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase">New Yield Detected</p>
+            <p id="popupAmount" class="text-lg font-bold text-slate-800">+$0.00 Added</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black">N</div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Nexus Executive Dashboard</h1>
+                    <p class="text-xs text-slate-400 font-medium tracking-wide">Command Interface v2.0</p>
+                </div>
             </div>
-            <div class="mt-6 md:mt-0 glass px-6 py-3 rounded-2xl">
-                <span id="liveClock" class="text-lg font-bold font-mono text-cyan-400">00:00:00</span>
+            <div class="mt-4 md:mt-0 flex items-center gap-6">
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">System Time</p>
+                    <p id="liveClock" class="text-lg font-bold text-slate-700">00:00:00 AM</p>
+                </div>
+                <div class="w-10 h-10 bg-slate-100 rounded-full border border-slate-200 flex items-center justify-center font-bold text-slate-500">AD</div>
             </div>
         </header>
 
-        <section class="glass p-8 rounded-[40px] mb-10 relative overflow-hidden border-l-8 border-cyan-500">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-6">
+        <div class="card-pro p-8 mb-8">
+            <div class="accent-bar bg-today"></div>
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
                 <div>
-                    <h2 class="text-gray-500 font-bold tracking-widest text-xs uppercase mb-1">Daily Revenue Goal</h2>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-5xl font-black title-font" id="dailyRev">$0.00</span>
-                        <span class="text-xl text-gray-600 font-bold italic">/ $100.00</span>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Today's Revenue (Reset 1:30 PM)</p>
+                    <h2 id="dailyRev" class="text-6xl font-black text-slate-900">$0.00</h2>
+                </div>
+                <div class="w-full md:w-64">
+                    <div class="flex justify-between mb-2">
+                        <span id="percentNum" class="text-sm font-bold text-blue-600">0%</span>
+                        <span class="text-xs font-bold text-slate-400">Target $100</span>
                     </div>
+                    <div class="progress-bar"><div id="goalBar" class="progress-fill" style="width: 0%"></div></div>
                 </div>
-                <div class="text-right">
-                    <span id="percentNum" class="text-4xl font-black title-font text-cyan-400">0%</span>
-                </div>
-            </div>
-            <div class="bar-container h-4 w-full">
-                <div id="goalBar" class="bar-fill h-full rounded-full" style="width: 0%"></div>
-            </div>
-        </section>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="glass p-6 rounded-3xl border-b-4 border-cyan-500/30">
-                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Gross Net</p>
-                <p id="totalNet" class="text-3xl font-black title-font">$0.00</p>
-            </div>
-            <div class="glass p-6 rounded-3xl border-b-4 border-purple-500/30">
-                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Conversions</p>
-                <p id="totalLeads" class="text-3xl font-black title-font">0</p>
-            </div>
-            <div class="glass p-6 rounded-3xl border-b-4 border-pink-500/30">
-                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Best Territory</p>
-                <p id="topCountry" class="text-3xl font-black title-font">--</p>
-            </div>
-            <div class="glass p-6 rounded-3xl border-b-4 border-blue-500/30">
-                <p class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Avg Payout</p>
-                <p id="avgPay" class="text-3xl font-black title-font">$0.00</p>
             </div>
         </div>
 
-        <div class="glass rounded-[32px] overflow-hidden flex-1 flex flex-col shadow-2xl">
-            <div class="p-5 border-b border-white/5 bg-white/5 flex justify-between items-center">
-                <h3 class="text-xs font-black tracking-[0.3em] text-cyan-400 uppercase italic">Live Matrix Stream</h3>
-                <span class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-                    <span class="text-[10px] font-bold text-gray-500 uppercase">Syncing...</span>
-                </span>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="card-pro p-6">
+                <div class="accent-bar bg-yesterday"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Yesterday</p>
+                <p id="yesterdayRev" class="text-3xl font-bold text-slate-800">$0.00</p>
             </div>
-            <div class="overflow-y-auto flex-1">
+            <div class="card-pro p-6">
+                <div class="accent-bar bg-week"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Last 7 Days</p>
+                <p id="weekRev" class="text-3xl font-bold text-slate-800">$0.00</p>
+            </div>
+            <div class="card-pro p-6">
+                <div class="accent-bar bg-net"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Total Net</p>
+                <p id="totalNet" class="text-3xl font-bold text-slate-800">$0.00</p>
+            </div>
+            <div class="card-pro p-6">
+                <div class="accent-bar bg-avg"></div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Avg Payout</p>
+                <p id="avgPay" class="text-3xl font-bold text-slate-800">$0.00</p>
+            </div>
+        </div>
+
+        <div class="card-pro overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Live Transaction Stream</h3>
+                <span id="topCountry" class="text-[10px] font-bold bg-blue-100 text-blue-600 px-4 py-1.5 rounded-lg uppercase tracking-wider">Loading...</span>
+            </div>
+            <div class="overflow-x-auto overflow-y-auto max-h-[400px]">
                 <table class="w-full text-left">
-                    <thead class="text-gray-600 text-[10px] uppercase font-bold tracking-[0.2em] sticky top-0 bg-[#0f172a] z-10">
-                        <tr>
-                            <th class="p-6">Timestamp</th>
-                            <th class="p-6">Agent_ID</th>
-                            <th class="p-6">Operation</th>
-                            <th class="p-6 text-right">Yield</th>
+                    <thead class="bg-white sticky top-0 border-b border-slate-100">
+                        <tr class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">
+                            <th class="px-8 py-4">Time</th>
+                            <th class="px-8 py-4">Agent ID</th>
+                            <th class="px-8 py-4">Operation</th>
+                            <th class="px-8 py-4 text-right">Yield</th>
                         </tr>
                     </thead>
-                    <tbody id="leadsTable" class="text-sm font-medium divide-y divide-white/5">
+                    <tbody id="leadsTable" class="divide-y divide-slate-100 text-sm font-medium">
                         </tbody>
                 </table>
             </div>
@@ -139,7 +163,6 @@
     </div>
 
     <script>
-        // 🚨 Your Google Web App URL 🚨
         const appUrl = 'https://script.google.com/macros/s/AKfycbzkiT8xK9umDamSUgi0mjMMHMj21FXRQVS80uousnrK93ioAxOKWvxR44ClUqHT7kAvXw/exec';
         const dailyGoal = 100;
         let lastLeadCount = 0;
@@ -147,18 +170,30 @@
 
         function initializeSystem() {
             document.getElementById('overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('overlay').style.display = 'none', 800);
+            setTimeout(() => document.getElementById('overlay').style.display = 'none', 500);
             isInitialized = true;
-            document.getElementById('system-status').innerText = "System Matrix Active";
-            document.getElementById('system-status').classList.remove('text-cyan-800');
-            document.getElementById('system-status').classList.add('text-green-500');
             refreshData();
         }
 
         function updateClock() {
-            document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('en-GB');
+            document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
         }
         setInterval(updateClock, 1000);
+
+        function showNotification(amount) {
+            const popup = document.getElementById('leadPopup');
+            document.getElementById('popupAmount').innerText = `+$${amount.toFixed(2)} Added`;
+            popup.classList.add('show');
+            new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3').play();
+            setTimeout(() => popup.classList.remove('show'), 3000);
+        }
+
+        function getNexusDate(dateObj) {
+            const d = new Date(dateObj);
+            const hours = d.getHours();
+            if (hours < 13 || (hours === 13 && d.getMinutes() < 30)) d.setDate(d.getDate() - 1);
+            return d.toDateString();
+        }
 
         async function refreshData() {
             if(!isInitialized) return;
@@ -167,57 +202,53 @@
                 const data = await response.json();
                 const sorted = data.reverse();
 
-                // Check for new lead and play sound
                 if (sorted.length > lastLeadCount && lastLeadCount !== 0) {
-                    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
-                    audio.play();
+                    showNotification(parseFloat(sorted[0].Payout) || 0);
                 }
 
-                let total = 0, daily = 0, leadsCount = sorted.length;
+                let total = 0, daily = 0, yesterday = 0, week = 0;
                 let countries = {}, tableHtml = '';
-                const today = new Date().toDateString();
+                const nexusToday = getNexusDate(new Date());
+                const yesterdayObj = new Date(); yesterdayObj.setDate(yesterdayObj.getDate() - 1);
+                const nexusYesterday = getNexusDate(yesterdayObj);
+                const sevenDaysAgo = new Date(); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-                sorted.forEach((row, index) => {
+                sorted.forEach((row) => {
                     const pay = parseFloat(row.Payout) || 0;
+                    const lDate = new Date(row.Date);
+                    const lNexusDate = getNexusDate(lDate);
                     total += pay;
-                    if(new Date(row.Date).toDateString() === today) daily += pay;
+                    if(lNexusDate === nexusToday) daily += pay;
+                    if(lNexusDate === nexusYesterday) yesterday += pay;
+                    if(lDate >= sevenDaysAgo) week += pay;
                     if(row.Country) countries[row.Country] = (countries[row.Country] || 0) + 1;
 
-                    // Animation for new row
-                    const isNew = (index === 0 && sorted.length > lastLeadCount && lastLeadCount !== 0) ? 'new-lead-row' : '';
-
-                    tableHtml += `
-                        <tr class="hover:bg-cyan-500/5 transition-all group ${isNew}">
-                            <td class="p-6 text-gray-600 font-mono text-xs">${new Date(row.Date).toLocaleTimeString()}</td>
-                            <td class="p-6"><span class="px-3 py-1 bg-cyan-500/10 text-cyan-400 font-bold rounded-lg border border-cyan-500/20">#${row.ID}</span></td>
-                            <td class="p-6 text-gray-300 font-bold uppercase tracking-tighter">${row.Offer}</td>
-                            <td class="p-6 text-right font-black text-white group-hover:text-cyan-400 transition-colors">+$${pay.toFixed(2)}</td>
-                        </tr>`;
+                    tableHtml += `<tr class="hover:bg-slate-50 transition-all">
+                        <td class="px-8 py-5 text-slate-400 font-medium text-xs">${lDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</td>
+                        <td class="px-8 py-5"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold text-xs">#${row.ID}</span></td>
+                        <td class="px-8 py-5 text-slate-600 font-medium">${row.Offer}</td>
+                        <td class="px-8 py-5 text-right font-bold text-slate-900">+$${pay.toFixed(2)}</td>
+                    </tr>`;
                 });
 
-                // Update UI elements
                 document.getElementById('dailyRev').innerText = '$' + daily.toFixed(2);
+                document.getElementById('yesterdayRev').innerText = '$' + yesterday.toFixed(2);
+                document.getElementById('weekRev').innerText = '$' + week.toFixed(2);
                 document.getElementById('totalNet').innerText = '$' + total.toFixed(2);
-                document.getElementById('totalLeads').innerText = leadsCount;
+                document.getElementById('avgPay').innerText = '$' + (sorted.length > 0 ? total/sorted.length : 0).toFixed(2);
                 document.getElementById('leadsTable').innerHTML = tableHtml;
                 
-                let avg = leadsCount > 0 ? total / leadsCount : 0;
-                document.getElementById('avgPay').innerText = '$' + avg.toFixed(2);
-
-                // Progress Calculation
                 let p = (daily / dailyGoal) * 100;
-                document.getElementById('goalBar').style.width = (p > 100 ? 100 : p) + '%';
+                document.getElementById('goalBar').style.width = Math.min(p, 100) + '%';
                 document.getElementById('percentNum').innerText = Math.round(p) + '%';
-
-                let topC = Object.keys(countries).reduce((a, b) => countries[a] > countries[b] ? a : b, '--');
-                document.getElementById('topCountry').innerText = topC;
-
-                lastLeadCount = leadsCount;
-
-            } catch (e) { console.log("Data Stream Interrupted..."); }
+                
+                let topC = Object.keys(countries).reduce((a, b) => countries[a] > countries[b] ? a : b, '---');
+                document.getElementById('topCountry').innerText = 'TOP: ' + topC;
+                lastLeadCount = sorted.length;
+            } catch (e) { console.error("Sync Error"); }
         }
 
-        setInterval(refreshData, 1000); // 1 Second Update
+        setInterval(refreshData, 10000);
         updateClock();
     </script>
 </body>
