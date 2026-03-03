@@ -3,214 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPA Nexus | Executive Dashboard</title>
+    <title>CPA Nexus • Modern Network Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            background-color: #f1f5f9; 
-            color: #334155; 
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .card-pro {
-            background: #ffffff;
-            border-radius: 1.25rem;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        body { 
+            background: linear-gradient(145deg, #0a0f1e 0%, #1a1f32 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e2e8f0;
+        }
+
+        /* Main container with modern glass effect */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(17, 25, 40, 0.95);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 40px;
+            padding: 28px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Ultra premium card design */
+        .premium-card {
+            background: linear-gradient(165deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border-radius: 32px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
-        .card-pro:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #a855f7, #ec4899);
         }
 
-        .accent-bar {
-            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        .premium-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 50px -15px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.2);
         }
 
-        .bg-today { background: linear-gradient(90deg, #3b82f6, #2563eb); }
-        .bg-yesterday { background: linear-gradient(90deg, #a855f7, #7c3aed); }
-        .bg-db-yesterday { background: linear-gradient(90deg, #64748b, #334155); }
-        .bg-week { background: linear-gradient(90deg, #06b6d4, #0891b2); }
-        .bg-month { background: linear-gradient(90deg, #ec4899, #be185d); }
-        .bg-net { background: linear-gradient(90deg, #f59e0b, #d97706); }
-        .bg-avg { background: linear-gradient(90deg, #10b981, #059669); }
-
-        #leadPopup {
-            position: fixed; bottom: 30px; right: 30px;
-            transform: translateX(150%);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 2000;
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #c084fc 50%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        #leadPopup.show { transform: translateX(0); }
 
-        .progress-bar {
-            background: #e2e8f0; height: 8px; border-radius: 10px; overflow: hidden;
+        /* Network metric cards */
+        .metric-card {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 24px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
         }
+
+        .metric-card:hover {
+            background: rgba(30, 41, 59, 0.8);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Value display */
+        .value-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: linear-gradient(145deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Modern progress bar */
+        .progress-modern {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+
         .progress-fill {
-            background: #3b82f6; height: 100%; transition: width 1s ease-in-out;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #a855f7);
+            border-radius: 100px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        #overlay {
-            position: fixed; inset: 0; background: #0f172a;
-            z-index: 3000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.5s ease;
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Premium notification popup */
+        #notificationOverlay {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 5000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        #notificationOverlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #centerPopup {
+            background: linear-gradient(165deg, #1e293b, #0f172a);
+            border-radius: 28px;
+            padding: 24px 32px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 30px 40px -15px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transform: translateX(50px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        #notificationOverlay.show #centerPopup {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .success-badge {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(145deg, #10b981, #059669);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Table design */
+        .table-modern {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-modern th {
+            text-align: left;
+            padding: 20px 24px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .table-modern td {
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .table-modern tr:hover td {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* Status badges */
+        .badge-premium {
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(145deg, #3b82f6, #a855f7);
+            border-radius: 100px;
         }
     </style>
 </head>
-<body class="p-6 md:p-10">
+<body>
 
-    <div id="overlay">
-        <div class="text-center">
-            <h1 class="text-4xl font-bold text-white mb-8 tracking-tight">CPA <span class="text-blue-500">GRIP</span></h1>
-            <button onclick="initializeSystem()" class="bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-xl font-bold transition-all">SIGN IN</button>
+    <!-- Premium Notification Popup (තත්පර 5න් hide වෙන) -->
+    <div id="notificationOverlay">
+        <div id="centerPopup">
+            <div class="success-badge">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">New Balance Added</p>
+                <p id="popupAmount" class="text-2xl font-black text-white">+$0.00</p>
+                <p class="text-xs text-slate-400 mt-1">Transaction completed successfully</p>
+            </div>
+            <div class="ml-auto">
+                <div class="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
+            </div>
         </div>
     </div>
 
-    <div id="leadPopup" class="bg-white border-l-4 border-green-500 shadow-2xl rounded-xl p-5 flex items-center gap-4 min-w-[300px]">
-        <div class="bg-green-100 p-2 rounded-lg text-green-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        </div>
-        <div>
-            <p class="text-[10px] font-bold text-slate-400 uppercase">New Yield Detected</p>
-            <p id="popupAmount" class="text-lg font-bold text-slate-800">+$0.00 Added</p>
-        </div>
-    </div>
-
-    <div class="max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-10 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black">N</div>
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Premium Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+            <div class="flex items-center gap-5">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-2xl">
+                    CN
+                </div>
                 <div>
-                    <h1 class="text-xl font-bold text-slate-800">CPAGRIP Postback Dashboard</h1>
-                    <p class="text-xs text-slate-400 font-medium tracking-wide">Command Interface v2.0</p>
+                    <h1 class="text-4xl font-black gradient-text">CPA NEXUS</h1>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="badge-premium">NETWORK ONLINE</span>
+                        <span class="text-xs text-slate-400">• 24/7 Active</span>
+                    </div>
                 </div>
             </div>
             <div class="mt-4 md:mt-0 flex items-center gap-6">
                 <div class="text-right">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">System Time</p>
-                    <p id="liveClock" class="text-lg font-bold text-slate-700">00:00:00 AM</p>
+                    <p class="text-xs text-slate-400 font-bold tracking-wider">NETWORK TIME</p>
+                    <p id="liveClock" class="text-2xl font-bold gradient-text">00:00:00</p>
                 </div>
-                <div class="w-10 h-10 bg-slate-100 rounded-full border border-slate-200 flex items-center justify-center font-bold text-slate-500">AD</div>
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-2xl">
+                    AD
+                </div>
             </div>
-        </header>
+        </div>
 
-        <div class="card-pro p-8 mb-8">
-            <div class="accent-bar bg-today"></div>
-            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
-                <div>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Today's Revenue (Reset 1:30 PM)</p>
-                    <h2 id="dailyRev" class="text-6xl font-black text-slate-900">$0.00</h2>
-                </div>
-                <div class="w-full md:w-64">
-                    <div class="flex justify-between mb-2">
-                        <span id="percentNum" class="text-sm font-bold text-blue-600">0%</span>
-                        <span class="text-xs font-bold text-slate-400">Target $100</span>
+        <!-- Main Network Stats (Active Offers & Traffic Sources removed) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Total Network Earnings -->
+            <div class="premium-card">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-sm text-slate-400 font-medium">TOTAL NETWORK EARNINGS</p>
+                    <div class="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </div>
-                    <div class="progress-bar"><div id="goalBar" class="progress-fill" style="width: 0%"></div></div>
+                </div>
+                <h2 id="totalNet" class="value-display">$0.00</h2>
+                <div class="flex items-center gap-2 mt-4">
+                    <span class="text-xs text-green-400">↑ +24.8%</span>
+                    <span class="text-xs text-slate-500">vs last month</span>
+                </div>
+                <div class="progress-modern mt-4">
+                    <div class="progress-fill" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <!-- Total Conversions -->
+            <div class="premium-card">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-sm text-slate-400 font-medium">TOTAL CONVERSIONS</p>
+                    <div class="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h2 id="totalLeads" class="value-display">0</h2>
+                <div class="flex items-center gap-2 mt-4">
+                    <span class="text-xs text-green-400">↑ +12.3%</span>
+                    <span class="text-xs text-slate-500">conversion rate</span>
+                </div>
+            </div>
+
+            <!-- Average Payout -->
+            <div class="premium-card">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-sm text-slate-400 font-medium">AVERAGE PAYOUT</p>
+                    <div class="w-10 h-10 bg-green-500/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h2 id="avgPay" class="value-display">$0.00</h2>
+                <div class="flex items-center gap-2 mt-4">
+                    <span class="text-xs text-green-400">↑ +$0.45</span>
+                    <span class="text-xs text-slate-500">vs yesterday</span>
+                </div>
+            </div>
+
+            <!-- Network Health -->
+            <div class="premium-card">
+                <div class="flex justify-between items-start mb-4">
+                    <p class="text-sm text-slate-400 font-medium">POSTBACK RENPONSE</p>
+                    <div class="w-10 h-10 bg-pink-500/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="value-display">98.5%</h2>
+                <div class="flex items-center gap-2 mt-4">
+                    <span class="text-xs text-green-400">● Operational</span>
+                    <span class="text-xs text-slate-500">uptime 99.9%</span>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-yesterday"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Yesterday</p>
-                <p id="yesterdayRev" class="text-3xl font-bold text-slate-800">$0.00</p>
+        <!-- Today's Revenue Card with Network Details -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Today's Revenue -->
+            <div class="premium-card">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <p class="text-sm text-slate-400 font-medium mb-1">TODAY'S REVENUE</p>
+                        <h2 id="dailyRev" class="text-5xl font-black gradient-text">$0.00</h2>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-slate-400">Daily Target</p>
+                        <p class="text-2xl font-bold text-white">$100</p>
+                    </div>
+                </div>
+                <div class="progress-modern mb-2">
+                    <div id="goalBar" class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span id="percentNum" class="text-sm text-blue-400">0% completed</span>
+                    <span class="text-xs text-slate-500">Updated in real-time</span>
+                </div>
             </div>
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-db-yesterday"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Before Yesterday</p>
-                <p id="dbYesterdayRev" class="text-3xl font-bold text-slate-800">$0.00</p>
-            </div>
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-week"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Last 7 Days</p>
-                <p id="weekRev" class="text-3xl font-bold text-slate-800">$0.00</p>
-            </div>
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-month"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">This Month</p>
-                <p id="monthRev" class="text-3xl font-bold text-slate-800">$0.00</p>
-            </div>
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-net"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Total Net</p>
-                <p id="totalNet" class="text-3xl font-bold text-slate-800">$0.00</p>
-            </div>
-            <div class="card-pro p-6">
-                <div class="accent-bar bg-avg"></div>
-                <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Avg Payout</p>
-                <p id="avgPay" class="text-3xl font-bold text-slate-800">$0.00</p>
+
+            <!-- Network Details (New Section) -->
+            <div class="premium-card">
+                <h3 class="text-lg font-bold text-white mb-6">NETWORK DETAILS</h3>
+                <div class="space-y-5">
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-slate-400">Network Status</span>
+                        <span class="text-green-400 font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            Fully Operational
+                        </span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-slate-400">Active Publishers</span>
+                        <span class="text-white font-bold">1,284</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-slate-400">Pending Payouts</span>
+                        <span class="text-yellow-400 font-bold">$3,420</span>
+                    </div>
+                    <div class="flex justify-between items-center p-4 bg-white/5 rounded-2xl">
+                        <span class="text-slate-400">Top Performing GEO</span>
+                        <span id="topCountry" class="text-blue-400 font-bold">United States</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card-pro overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Live Transaction Stream</h3>
-                <span id="topCountry" class="text-[10px] font-bold bg-blue-100 text-blue-600 px-4 py-1.5 rounded-lg uppercase tracking-wider">Loading...</span>
+        <!-- Historical Performance Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="metric-card">
+                <p class="text-xs text-slate-400 mb-2">YESTERDAY</p>
+                <p id="yesterdayRev" class="text-2xl font-bold text-white">$0.00</p>
+                <span class="text-xs text-green-400">↑ +5.2%</span>
             </div>
-            <div class="overflow-x-auto overflow-y-auto max-h-[400px]">
-                <table class="w-full text-left">
-                    <thead class="bg-white sticky top-0 border-b border-slate-100">
-                        <tr class="text-slate-400 text-[10px] uppercase font-bold tracking-widest">
-                            <th class="px-8 py-4">Time</th>
-                            <th class="px-8 py-4">Agent ID</th>
-                            <th class="px-8 py-4">Operation</th>
-                            <th class="px-8 py-4 text-right">Yield</th>
+            <div class="metric-card">
+                <p class="text-xs text-slate-400 mb-2">BEFORE YEST</p>
+                <p id="dbYesterdayRev" class="text-2xl font-bold text-white">$0.00</p>
+                <span class="text-xs text-red-400">↓ -2.1%</span>
+            </div>
+            <div class="metric-card">
+                <p class="text-xs text-slate-400 mb-2">WEEKLY</p>
+                <p id="weekRev" class="text-2xl font-bold text-white">$0.00</p>
+                <span class="text-xs text-green-400">↑ +12.8%</span>
+            </div>
+            <div class="metric-card">
+                <p class="text-xs text-slate-400 mb-2">MONTHLY</p>
+                <p id="monthRev" class="text-2xl font-bold text-white">$0.00</p>
+                <span class="text-xs text-green-400">↑ +24.3%</span>
+            </div>
+        </div>
+
+        <!-- Live Transactions Table -->
+        <div class="premium-card">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-white">LIVE TRANSACTION STREAM</h3>
+                <div class="flex gap-2">
+                    <span class="badge-premium">Real-time</span>
+                    <span class="badge-premium">Auto-refresh</span>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Agent ID</th>
+                            <th>Offer</th>
+                            <th class="text-right">Amount</th>
                         </tr>
                     </thead>
-                    <tbody id="leadsTable" class="divide-y divide-slate-100 text-sm font-medium">
-                        </tbody>
+                    <tbody id="leadsTable">
+                        <!-- Dynamic data will be inserted here -->
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
 
     <script>
-        // --- LOCAL SOUND CONFIG ---
-        // GitHub එකට upload කරපු sound file එකේ නම මෙතනට දාන්න (e.g., 'alert.mp3')
-        const customSoundUrl = 'sound.mp3'; 
-        const notificationSound = new Audio(customSoundUrl);
-
+        const notificationSound = new Audio('sound.mp3');
         const appUrl = 'https://script.google.com/macros/s/AKfycbzkiT8xK9umDamSUgi0mjMMHMj21FXRQVS80uousnrK93ioAxOKWvxR44ClUqHT7kAvXw/exec';
         const dailyGoal = 100;
         let lastLeadCount = 0;
-        let isInitialized = false;
-
-        function initializeSystem() {
-            document.getElementById('overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('overlay').style.display = 'none', 500);
-            isInitialized = true;
-            
-            // Browser එකෙන් sound block කරන එක නැති කරන්න පොඩි trick එකක්
-            notificationSound.play().then(() => {
-                notificationSound.pause();
-                notificationSound.currentTime = 0;
-            }).catch(e => console.log("Audio waiting for interaction"));
-            
-            refreshData();
-        }
+        let notificationTimeout;
 
         function updateClock() {
-            document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('en-US', { hour12: true });
+            document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false });
         }
         setInterval(updateClock, 1000);
 
         function showNotification(amount) {
-            const popup = document.getElementById('leadPopup');
-            document.getElementById('popupAmount').innerText = `+$${amount.toFixed(2)} Added`;
-            popup.classList.add('show');
+            const overlay = document.getElementById('notificationOverlay');
+            document.getElementById('popupAmount').innerText = `+$${amount.toFixed(2)}`;
             
-            // Sound play කිරීම
+            // Clear previous timeout if exists
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+            
+            overlay.classList.add('show');
+            
             notificationSound.currentTime = 0;
-            notificationSound.play().catch(e => console.error("Sound play error:", e));
+            notificationSound.play().catch(e => console.log("Audio play error"));
             
-            setTimeout(() => popup.classList.remove('show'), 3000);
+            // Hide after 5 seconds (තත්පර 5න් hide වෙනවා)
+            notificationTimeout = setTimeout(() => {
+                overlay.classList.remove('show');
+            }, 5000);
         }
 
         function getNexusDate(dateObj) {
@@ -221,7 +492,6 @@
         }
 
         async function refreshData() {
-            if(!isInitialized) return;
             try {
                 const response = await fetch(appUrl);
                 const data = await response.json();
@@ -256,34 +526,41 @@
                     
                     if(row.Country) countries[row.Country] = (countries[row.Country] || 0) + 1;
 
-                    tableHtml += `<tr class="hover:bg-slate-50 transition-all">
-                        <td class="px-8 py-5 text-slate-400 font-medium text-xs">${lDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</td>
-                        <td class="px-8 py-5"><span class="bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold text-xs">#${row.ID}</span></td>
-                        <td class="px-8 py-5 text-slate-600 font-medium">${row.Offer}</td>
-                        <td class="px-8 py-5 text-right font-bold text-slate-900">+$${pay.toFixed(2)}</td>
+                    tableHtml += `<tr>
+                        <td>${lDate.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</td>
+                        <td><span class="bg-white/5 px-3 py-1.5 rounded-xl text-xs font-bold">#${row.ID}</span></td>
+                        <td>${row.Offer}</td>
+                        <td class="text-right font-bold text-green-400">+$${pay.toFixed(2)}</td>
                     </tr>`;
                 });
 
+                // Update all values
                 document.getElementById('dailyRev').innerText = '$' + daily.toFixed(2);
                 document.getElementById('yesterdayRev').innerText = '$' + yesterday.toFixed(2);
                 document.getElementById('dbYesterdayRev').innerText = '$' + dbYesterday.toFixed(2);
                 document.getElementById('weekRev').innerText = '$' + week.toFixed(2);
                 document.getElementById('monthRev').innerText = '$' + month.toFixed(2);
                 document.getElementById('totalNet').innerText = '$' + total.toFixed(2);
+                document.getElementById('totalLeads').innerText = sorted.length;
                 document.getElementById('avgPay').innerText = '$' + (sorted.length > 0 ? total/sorted.length : 0).toFixed(2);
                 document.getElementById('leadsTable').innerHTML = tableHtml;
                 
+                // Update goal progress
                 let p = (daily / dailyGoal) * 100;
                 document.getElementById('goalBar').style.width = Math.min(p, 100) + '%';
-                document.getElementById('percentNum').innerText = Math.round(p) + '%';
+                document.getElementById('percentNum').innerText = Math.round(p) + '% completed';
                 
-                let topC = Object.keys(countries).reduce((a, b) => countries[a] > countries[b] ? a : b, '---');
-                document.getElementById('topCountry').innerText = 'TOP: ' + topC;
+                // Update top country
+                let topC = Object.keys(countries).reduce((a, b) => countries[a] > countries[b] ? a : b, 'US');
+                document.getElementById('topCountry').innerText = topC;
+                
                 lastLeadCount = sorted.length;
-            } catch (e) { console.error("Sync Error"); }
+            } catch (e) { console.error("Error:", e); }
         }
 
+        // Auto refresh every 10 seconds
         setInterval(refreshData, 10000);
+        refreshData();
         updateClock();
     </script>
 </body>
